@@ -1,5 +1,7 @@
 package com.example.androidchessremastered.java.chess.Piece;
 
+import android.graphics.Canvas;
+
 import com.example.androidchessremastered.java.chess.Board.Board;
 import com.example.androidchessremastered.java.chess.Tile.IntPair;
 
@@ -69,5 +71,10 @@ public class Pawn extends ChessPiece{
     }
     public boolean IsMoveLegal(IntPair targetCoordinate, Board cb){
         return false;
+    }
+
+    @Override
+    public void Draw(Canvas canvas, float xScreenPosition, float yScreenPosition, float scale) {
+
     }
 }

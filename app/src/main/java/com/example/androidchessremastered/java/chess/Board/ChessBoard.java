@@ -1,10 +1,14 @@
 package com.example.androidchessremastered.java.chess.Board;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+
 import com.example.androidchessremastered.java.chess.Piece.ChessPiece;
-import com.example.androidchessremastered.java.chess.Piece.Piece;
 import com.example.androidchessremastered.java.chess.Tile.ChessTile;
 import com.example.androidchessremastered.java.chess.Tile.IntPair;
-import com.example.androidchessremastered.java.chess.Tile.Tile;
+
+import java.util.HashMap;
 
 public class ChessBoard extends Board<ChessPiece> {
 
@@ -19,6 +23,45 @@ public class ChessBoard extends Board<ChessPiece> {
     protected int column;
     protected int row;
     protected ChessTile[][] board;
+    protected ChessBoardGraphic chessBoardGraphic;
+    protected HashMap<Integer, String> playerColor;
+    protected void CreateBoard(){
+        Paint outLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        outLinePaint.setColor(Color.BLACK);
+        outLinePaint.setStrokeWidth(20);
+        Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        fillPaint.setColor(Color.WHITE);
+        Paint color1 = new Paint(Paint.ANTI_ALIAS_FLAG);
+        color1.setColor(Color.WHITE);
+        Paint color2 = new Paint(Paint.ANTI_ALIAS_FLAG);
+        color2.setColor(Color.BLUE);
+        chessBoardGraphic = new ChessBoardGraphic(this, 0.08f, fillPaint, outLinePaint, color1, color2, 0.9f);
+        board = new ChessTile[row][column];
+        for(int r = 0; r < row; r++){
+            for(int c = 0; c < column; c++){
+                ChessTile tile = new ChessTile(r, c, null);
+                board[r][c] = tile;
+            }
+        }
+    }
+    public ChessBoard(){
+        //construct default chess board
+        playerColor = new HashMap<Integer, String>();
+        playerColor.put(0, "w");
+        playerColor.put(1, "b");
+        row = DEFAULT_MAX_TILE_HEIGHT;
+        column = DEFAULT_MAX_TILE_WIDTH;
+        CreateBoard();
+    }
+    public ChessBoard(int a){
+        //construct board according to the list
+    }
+    public void DrawBoard(Canvas canvas){
+        if(chessBoardGraphic == null){
+            return;
+        }
+        chessBoardGraphic.Draw(canvas, 0, 0, 0);
+    }
     /**
      * Determine if the given coordinate is valid
      *
@@ -142,7 +185,32 @@ public class ChessBoard extends Board<ChessPiece> {
      */
     @Override
     public String BoardToString() {
-        return null;
+        if(playerColor == null){
+            return null;
+        }
+        boolean blackSpot = false;
+        StringBuilder strBuilder = new StringBuilder();
+        for(int r = row - 1; r >= 0; r--){
+            for(int c = 0; c < column; c++){
+                ChessPiece piece = board[r][c].GetPiece();
+                if(piece == null){
+                    if(blackSpot){
+                        strBuilder.append("## ");
+                    }else{
+                        strBuilder.append("   ");
+                    }
+                }else{
+                    int ownerID = piece.GetOwnerID();
+                    String color = playerColor.get(ownerID);
+                    strBuilder.append(color + piece.toString() + " ");
+                }
+                blackSpot = !blackSpot;
+            }
+            blackSpot = !blackSpot;
+            strBuilder.append((r + 1) + "\n");
+        }
+        strBuilder.append(" a  b  c  d  e  f  g  h");
+        return strBuilder.toString();
     }
 
     /**

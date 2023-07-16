@@ -3,7 +3,7 @@ package com.example.androidchessremastered.java.chess.Piece;
 import com.example.androidchessremastered.java.chess.Board.Board;
 import com.example.androidchessremastered.java.chess.Tile.IntPair;
 
-public abstract class ChessPiece extends Piece{
+public abstract class ChessPiece extends Piece implements IDrawable{
     /**
      * Owner of this piece.
      * */
